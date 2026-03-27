@@ -41,4 +41,6 @@ app.post("/spin", (req, res) => {
   res.json({ reward, coins: users[userId].coins });
 });
 
-app.listen(3000, () => console.log("Server running"));
+// 🔥 IMPORTANT FIX (Railway port)
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log("Server running on " + PORT));
