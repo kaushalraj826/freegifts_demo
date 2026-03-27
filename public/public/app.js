@@ -1,27 +1,24 @@
-// Get or create unique userId for this user
+// Unique user ID for this client
 let userId = localStorage.getItem("uid");
-
 if (!userId) {
-  userId = Date.now().toString(); // unique ID
+  userId = Date.now().toString();
   localStorage.setItem("uid", userId);
 }
 
-// On page load: join the user and update coins
+// Update coins display
+function updateCoins(coins) {
+  document.getElementById("coins").innerText = "Coins: " + coins;
+}
+
+// Join user on page load
 fetch("/join", {
   method: "POST",
   headers: { "Content-Type": "application/json" },
   body: JSON.stringify({ userId })
 })
 .then(res => res.json())
-.then(data => {
-  document.getElementById("coins").innerText = "Coins: " + data.coins;
-})
-.catch(err => console.error("Error joining user:", err));
-
-// Update coins display helper
-function updateCoins(coins) {
-  document.getElementById("coins").innerText = "Coins: " + coins;
-}
+.then(data => updateCoins(data.coins))
+.catch(err => console.error(err));
 
 // Daily bonus
 function daily() {
@@ -32,14 +29,10 @@ function daily() {
   })
   .then(res => res.json())
   .then(data => {
-    if (data.success) {
-      updateCoins(data.coins);
-      alert("📅 Daily bonus claimed!");
-    } else {
-      alert(data.msg);
-    }
+    if (data.success) updateCoins(data.coins);
+    else alert(data.msg);
   })
-  .catch(err => alert("Error: " + err));
+  .catch(err => alert(err));
 }
 
 // Spin
@@ -52,7 +45,7 @@ function spin() {
   .then(res => res.json())
   .then(data => {
     updateCoins(data.coins);
-    alert("🎰 You won: " + data.reward + " coins!");
+    alert("🎉 You won: " + data.reward + " coins!");
   })
-  .catch(err => alert("Error: " + err));
+  .catch(err => alert(err));
 }
