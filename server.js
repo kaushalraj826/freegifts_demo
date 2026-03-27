@@ -1,4 +1,5 @@
 const express = require("express");
+const path = require("path");
 const app = express();
 
 app.use(express.static("public"));
@@ -41,6 +42,11 @@ app.post("/spin", (req, res) => {
   res.json({ reward, coins: users[userId].coins });
 });
 
-// 🔥 IMPORTANT FIX (Railway port)
+// serve index.html for root
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "index.html"));
+});
+
+// Railway port
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log("Server running on " + PORT));
