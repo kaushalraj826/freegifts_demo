@@ -2,12 +2,13 @@ const express = require("express");
 const path = require("path");
 const app = express();
 
-app.use(express.static("public"));
+// Serve public folder
+app.use(express.static(path.join(__dirname, "public")));
 app.use(express.json());
 
 let users = {};
 
-// join
+// Join route
 app.post("/join", (req, res) => {
   const { userId } = req.body;
 
@@ -18,7 +19,7 @@ app.post("/join", (req, res) => {
   res.json(users[userId]);
 });
 
-// daily bonus
+// Daily bonus
 app.post("/daily", (req, res) => {
   const { userId } = req.body;
   let now = Date.now();
@@ -32,17 +33,16 @@ app.post("/daily", (req, res) => {
   res.json({ success: false, msg: "Already claimed" });
 });
 
-// spin
+// Spin
 app.post("/spin", (req, res) => {
   const { userId } = req.body;
-
   let reward = Math.floor(Math.random() * 50);
   users[userId].coins += reward;
 
   res.json({ reward, coins: users[userId].coins });
 });
 
-// serve index.html for root
+// Serve index.html at root
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
